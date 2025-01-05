@@ -5,13 +5,15 @@ const jwt = require('jsonwebtoken');
 //creating a user schema for the user and the fields that the user will have
 const userSchema = new mongoose.Schema({
     fullname: {
-        type: String,
-        required: true,
-        minlength: [3, 'First Name must be atleast 3 characters long'],
-    },
-    lastname: {
-        type: String,
-        minlength: [3, 'Last Name must be atleast 3 characters long'],
+        firstname: {
+            type: String,
+            required: true,
+            minlength: [3, 'First Name must be atleast 3 characters long'],
+        },
+        lastname: {
+            type: String,
+            minlength: [3, 'Last Name must be atleast 3 characters long'],
+        }
     },
     email: {
         type: String,
@@ -40,7 +42,8 @@ userSchema.methods.comparePasswords = async function (password) {
 }
 
 //hash the password before saving it to the database
-userSchema.methods.hashpPassword = async function (password) {
+//note: userSchema.statics is used to define a static method on the model
+userSchema.statics.hashPassword = async function (password) {
     return await bcrypt.hash(password, 10);//the length of hased password will be 10
 }
 

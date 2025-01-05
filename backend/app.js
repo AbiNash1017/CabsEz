@@ -9,17 +9,21 @@ const express=require('express');
 /*cors:for cross origin resource sharing so that when we move to production it only accepts requests from our server */ 
 const cors=require('cors');
 
+const userRoutes=require('./routes/user.routes');
+
 const app = express();
+
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+
+app.use(userRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World');
 })
 
-app.get('/buntu',(req,res)=>{
-    console.log('buntu');
-    res.send(`the myth is lost in time`);
-})
+app.use('/users',userRoutes);
 
 
 module.exports = app;
