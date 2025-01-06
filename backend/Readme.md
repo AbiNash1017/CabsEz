@@ -191,3 +191,153 @@ Authorization: Bearer <JWT_Token>
 This documentation provides a clear overview of how to use the User Registration API, including request details, validation rules, and response structures. For further assistance or issues, please reach out to the support team.
 
 ---
+######
+# User Login API Documentation
+######
+
+This document provides an overview of the user login functionality implemented in the provided code snippet. The API allows users to log in by validating their credentials (email and password) and returns a JSON Web Token (JWT) upon successful authentication.
+
+---
+
+## **API Endpoint**
+**POST** `/api/users/login`
+
+---
+
+## **Request Body**
+
+The request body should contain the following fields:
+
+| Field       | Type   | Required | Description                      |
+|-------------|--------|----------|----------------------------------|
+| `email`     | String | Yes      | The email address of the user.  |
+| `password`  | String | Yes      | The password of the user.       |
+
+### Example Request Body
+
+```json
+{
+    "email": "user@example.com",
+    "password": "yourpassword123"
+}
+```
+
+---
+
+## **Response**
+
+### **Success Response (Status Code: 200)**
+
+On successful login, the API returns the user object and a JWT token.
+
+#### Example Response
+
+```json
+{
+    "user": {
+        "_id": "64a1b2c3d4e5f6g7h8i9j0k",
+        "name": "John Doe",
+        "email": "user@example.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+---
+
+### **Error Responses**
+
+#### **Validation Error (Status Code: 400)**
+
+Occurs when the request body fails validation (e.g., missing or invalid fields).
+
+##### Example Response
+
+```json
+{
+    "errors": [
+        {
+            "msg": "Email is required",
+            "param": "email",
+            "location": "body"
+        }
+    ]
+}
+```
+
+#### **Invalid Credentials (Status Code: 401)**
+
+Occurs when the email or password is incorrect.
+
+##### Example Response
+
+```json
+{
+    "errors": [
+        {
+            "msg": "Invalid Credentials"
+        }
+    ]
+}
+```
+
+---
+
+## **How It Works**
+
+1. **Validation**:
+   - The request body is validated using `validationResult(req)`.
+   - If there are validation errors, a `400 Bad Request` response is returned with the error details.
+
+2. **User Lookup**:
+   - The API checks if a user exists with the provided email.
+   - If no user is found, a `401 Unauthorized` response is returned with the message `"Invalid Credentials"`.
+
+3. **Password Comparison**:
+   - If the user exists, the API compares the provided password with the hashed password stored in the database using the `comparePasswords` method.
+   - If the passwords do not match, a `401 Unauthorized` response is returned.
+
+4. **Token Generation**:
+   - If the credentials are valid, a JWT token is generated using the `generateAuthToken` method.
+   - The token and user details are returned in the response.
+
+---
+
+## **Dependencies**
+
+- **Mongoose**: Used for querying the database.
+- **JWT (JSON Web Token)**: Used for generating authentication tokens.
+- **Express Validator**: Used for request body validation.
+
+---
+
+## **Example Usage**
+
+### **Request**
+
+```bash
+curl -X POST http://localhost:3000/api/users/login \
+-H "Content-Type: application/json" \
+-d '{"email": "user@example.com", "password": "yourpassword123"}'
+```
+
+### **Response**
+
+```json
+{
+    "user": {
+        "_id": "64a1b2c3d4e5f6g7h8i9j0k",
+        "name": "John Doe",
+        "email": "user@example.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+---
+
+## **Notes**
+
+- Ensure that the `userModel` has the `comparePasswords` and `generateAuthToken` methods implemented.
+- The API assumes that the password is stored in a hashed format in the database.
+- Always use HTTPS in production to secure sensitive data like passwords and tokens.
