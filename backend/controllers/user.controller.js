@@ -17,6 +17,14 @@ module.exports.registerUser = async (req, res, next) => {
     //extracting the fields from the request body
     const { fullname, email, password } = req.body;
 
+    //checking wether the user already exists with same email id
+    const isUseralreadyexists = await userModel.findOne({ email });
+
+    //if exists then throws a response that user already exits
+    if (!isUseralreadyexists) {
+        return res.status(400).json({ message: 'user already exists with the email id' });
+    }
+
     //hasing the password
     const hashedPassword = await userModel.hashPassword(password);
 
@@ -50,7 +58,7 @@ module.exports.loginUser = async (req, res, next) => {
 
     //if the user does not exist then send an error message
     if (!user) {
-        return res.status(401).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        return res.status(401).json({ message: 'Invalid Credentials' });
     }
 
     //checking if the user exists and the password is correct
@@ -58,14 +66,14 @@ module.exports.loginUser = async (req, res, next) => {
 
     //if the password is incorrect then send an error message
     if (!isMatch) {
-        return res.status(401).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        return res.status(401).json({ message: 'Invalid Credentials' });
     }
 
     //sending the user and the token as response
     const token = user.generateAuthToken();
 
     //cookie
-    res.cookie('token',token);//sends the token as a cookie
+    res.cookie('token', token);//sends the token as a cookie
 
     //prodcution method
     // res.cookie('token', token, { 
@@ -78,7 +86,7 @@ module.exports.loginUser = async (req, res, next) => {
     res.status(200).json({ user, token });
 };
 //user profile
-module.exports.userProfile = async (req, res, next) => { 
+module.exports.userProfile = async (req, res, next) => {
     //getting the user id from the request
     return res.status(200).json({ user: req.user });
 }
@@ -87,8 +95,11 @@ module.exports.userProfile = async (req, res, next) => {
 module.exports.logoutUser = async (req, res, next) => {
     //clearing the cookie
     res.clearCookie('token');
-    const token=req.cookies.token || req.headers.authorization.split(' ')[1];
+    const token = req.cookies.token || req.headers.authorization.split(' ')[1];
 
     await blacklistTokenModel.create({ token });
+
+    res.clearCookie('token');
+    
     return res.status(200).json({ message: 'logout successful' });
 }
