@@ -1,30 +1,55 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { userDataContext } from '../context/UserContext'
 
 const UserSignup = () => {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [userData, setUserData] = useState({})
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [userData, setUserData] = useState({})
 
-    const submitHandler = (e) => {
-      e.preventDefault();
-      setUserData({
-         fullName: {
+  //we use the navigate hook to navigate to another page
+  const navigate = useNavigate()
+
+  //we use the user context to get the user data
+  const { user, setUser } = useContext(userDataContext);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const newUser = {
+      fullname: {
         firstname: firstName,
         lastname: lastName
       },
-        email: email,
-        password: password
-      });
-      setEmail('');
-      setPassword('');
+      email: email,
+      password: password
+    };
+    //sending the data to the backend through axios post
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newUser);
 
+    //if the response status is 201 then navigate to the login page since the user is registered
+    if (response.status === 201) {
+      // here we get the data from the response
+      const data = response.data;
+
+      setUser(data.user);//we set the user data to the user context
+      //there might be a secnario that the user after loging in he refreshes the page and to avoid the tresure to login again dure to reload or refresh we will sve the token in the local storage
+      localStorage.setItem('token', data.token);
+      //Once the user is registered , we navigate or redirect to then navigate to the home page
+      navigate('/home');
     }
-    return (
-      <div>
+
+    setEmail('');
+    setPassword('');
+    setFirstName('');
+    setLastName('');
+  }
+
+  return (
+    <div>
       <div className='p-7 h-screen flex flex-col justify-between'>
         <div>
           <img className='w-16 mb-10' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYQy-OIkA6In0fTvVwZADPmFFibjmszu2A0g&s" alt="" />
@@ -94,7 +119,7 @@ const UserSignup = () => {
         </div>
       </div>
     </div >
-    )
-  }
+  )
+}
 
-  export default UserSignup;
+export default UserSignup;

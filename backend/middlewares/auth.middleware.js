@@ -38,7 +38,7 @@ module.exports.authUser = async (req, res, next) => {
 
     } catch (err) {
         //if the token is not verified then send an error message
-        return res.status(401).json({ msg: 'authorization denied' });
+        return res.status(401).json({ message: 'authorization denied' });
     }
 
 }
