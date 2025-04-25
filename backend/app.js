@@ -12,6 +12,7 @@ const cors=require('cors');
 const userRoutes=require('./routes/user.routes');
 const captainRoutes=require('./routes/captain.routes');
 const mapRoutes=require('./routes/maps.routes');
+const rideRoutes=require('./routes/ride.routes');
 const cookieParser = require('cookie-parser');
 
 const app = express();
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/users',userRoutes);
 app.use('/captains',captainRoutes);
 app.use('/maps',mapRoutes);
+app.use('/rides',rideRoutes);
 
 
 module.exports = app;

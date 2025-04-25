@@ -1,18 +1,32 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Start = () => {
   return (
-    <div>
-        <div className='bg-cover bg-center bg-[url(./assets/CoverImg.jpg)] h-screen pt-5 flex justify-between flex-col w-full bg-[#bc6893]'>
-            <img className='w-20 ml-5' src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png" alt="" />
-            <div className='bg-white pb-6 py-4 px-4'>
-                <h2 className='text-3xl font-bold'>Get Started with Uber</h2>
-                <Link to={'/login'} className='w-full flex items-center justify-center bg-black text-white py-3 font-semibold rounded mt-5'>Continue</Link>
-            </div>
-        </div>
-    </div>
-  )
-}
+    <div className="bg-[#2f466d] bg-cover bg-center bg-[url(./assets/coverB.jpg)] min-h-screen flex flex-col">
+      
+      {/* Centered Logo Section */}
+      <div className="flex-1 flex justify-center items-center px-4">
+        <img
+          className="w-[60%] max-w-xs sm:max-w-sm"
+          src="../src/assets/logoUser.png"
+          alt="logo"
+        />
+      </div>
 
-export default Start
+      {/* Footer Section */}
+      <div className="bg-white py-6 px-4 w-full rounded-t-3xl shadow-md mt-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center">Get Started with CabEz</h2>
+        <Link
+          to="/login"
+          className="mt-5 block text-center w-full bg-black text-white py-3 font-semibold rounded animate-rise"
+        >
+          Continue
+        </Link>
+      </div>
+      
+    </div>
+  );
+};
+
+export default Start;
