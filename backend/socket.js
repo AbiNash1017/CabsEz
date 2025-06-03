@@ -8,24 +8,24 @@ function initializeSocket(server) {
     io = socketIo(server, {
         cors: {
             origin: '*',
-            methods: ['GET', 'POST'],
+            methods: [ 'GET', 'POST' ]
         }
     });
 
     io.on('connection', (socket) => {
-        console.log(`Client connected:${socket.id}`);
+        console.log(`Client connected: ${socket.id}`);
+
 
         socket.on('join', async (data) => {
             const { userId, userType } = data;
 
             if (userType === 'user') {
-                await userModel.findByIdAndUpdate(userId, {
-                    socketId: socket.id
-                });
+                await userModel.findByIdAndUpdate(userId, { socketId: socket.id });
             } else if (userType === 'captain') {
                 await captainModel.findByIdAndUpdate(userId, { socketId: socket.id });
             }
         });
+
 
         socket.on('update-location-captain', async (data) => {
             const { userId, location } = data;
@@ -43,18 +43,19 @@ function initializeSocket(server) {
         });
 
         socket.on('disconnect', () => {
-            console.log(`Client disconnected:${socket.id}`);
+            console.log(`Client disconnected: ${socket.id}`);
         });
     });
 }
 
 const sendMessageToSocketId = (socketId, messageObject) => {
-    console.log(messageObject);
+
+console.log(messageObject);
 
     if (io) {
         io.to(socketId).emit(messageObject.event, messageObject.data);
     } else {
-        console.log('Socket not initialized.');
+        console.log('Socket.io not initialized.');
     }
 }
 

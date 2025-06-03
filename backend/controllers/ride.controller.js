@@ -22,7 +22,7 @@ module.exports.createRide = async (req, res) => {
         const pickupCoordinates = await mapsService.getAddressCoordinate(pickup);
         // console.log(pickupCoordinates);
 
-         const captainsInRadius = await mapsService.getCaptainsInTheRadius(pickupCoordinates.ltd, pickupCoordinates.lng, 2);
+        const captainsInRadius = await mapsService.getCaptainsInTheRadius(pickupCoordinates.ltd, pickupCoordinates.lng, 2);
 
         ride.otp = " ";
 
